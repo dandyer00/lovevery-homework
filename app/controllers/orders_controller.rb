@@ -40,7 +40,7 @@ private
       full_name: params.require(:order)[:child_full_name],
       parent_name: params.require(:order)[:shipping_name],
       # TODO: the date parse blows up with bad data... should add clientside 
-      #       datepicker+validation (or at least serverside validation) 
+      #       datepicker+validation (or at least serverside validation with a graceful failure) 
       birthdate: Date.parse(params.require(:order)[:child_birthdate]), 
     }
   end

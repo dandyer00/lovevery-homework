@@ -1,6 +1,6 @@
 <% if @order.errors.any? %>
   <aside class="alert alert-danger m-3" role="alert">
-    <%= @order.errors.full_messages.join(",") %>
+    <%= @order.errors.full_messages.join("; ") %>
   </aside>
 <% end %>
 <section class="mt-2 pt-3">
@@ -32,9 +32,9 @@
       <%= form.check_box :is_gift %>
     </div>
   </div>
-  <div class="form-row" id="giver-row">
+  <div class="form-row d-none" id="giver-info">
     <div class="form-group col-md-12">
-      <%= form.label :giver_name, "Giver's Name" %>
+      <%= form.label :giver_name, "Your Name" %>
       <%= form.text_field :giver_name, class: "form-control" %>
     </div>
     <div class="form-group col-md-12">
@@ -42,7 +42,7 @@
       <%= form.text_area :giver_message, class: "form-control" %>
     </div>
   </div>
-  <div class="form-row" id="address-row">
+  <div class="form-row" id="address-info">
     <div class="form-group col-md-8">
       <%= form.label :address %>
       <%= form.text_field :address, class: "form-control", placeholder: "e.g. 123 Any St" %>
@@ -75,3 +75,21 @@
   </div>
 <% end %>
 </section>
+<script>
+  // Placing this here for now because it is short and all about presentation.
+  // As the app matures, this may move to a more civilized place in 
+  // code pulled into the bundle.
+
+  // Toggle visibility of adddres&zipcode vs. giver&message.
+  document.getElementById('order_is_gift').onchange = function (e) { 
+    var addr = document.getElementById('address-info').classList
+    var giver = document.getElementById('giver-info').classList
+    if (e.target.checked) {
+      addr.add('d-none')
+      giver.remove('d-none')
+    } else {
+      addr.remove('d-none')
+      giver.add('d-none')
+    }
+  }
+</script>
