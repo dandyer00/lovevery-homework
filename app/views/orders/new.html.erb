@@ -1,6 +1,6 @@
 <% if @order.errors.any? %>
   <aside class="alert alert-danger m-3" role="alert">
-    <%= @order.errors.full_messages.join(",") %>
+    <%= @order.errors.full_messages.join("; ") %>
   </aside>
 <% end %>
 <section class="mt-2 pt-3">
@@ -8,17 +8,18 @@
 <h2 class="h4 mt-4"><%= @order.product.name %></h2>
 <h3 class="h5 font-weight-normal mb-3"><%= number_to_currency(@order.product.price_cents / 100) %></h3>
 <%= form_with model: @order, local: true  do |form| %>
+  <%= form.hidden_field :product_id %>
   <div class="form-row">
     <div class="form-group col-md-12">
-      <%= form.label :shipping_name, "Your Name" %>
+      <%= form.label :shipping_name, "Parent Name" %>
       <%= form.text_field :shipping_name, class: "form-control" %>
     </div>
     <div class="form-group col-md-6">
-      <%= form.label :child_full_name, "Your Child's Name" %>
+      <%= form.label :child_full_name, "Child's Name" %>
       <%= form.text_field :child_full_name, class: "form-control" %>
     </div>
     <div class="form-group col-md-6">
-      <%= form.label :child_birthdate, "Your Child's Birthdate (or expected date)" %>
+      <%= form.label :child_birthdate, "Child's Birthdate (or expected date)" %>
       <%= form.text_field :child_birthdate, class: "form-control" %>
       <small id="passwordHelpBlock" class="form-text text-muted">
         Use format YYYY-MM-DD
@@ -26,7 +27,22 @@
     </div>
   </div>
   <div class="form-row">
-    <%= form.hidden_field :product_id %>
+    <div class="form-group col-md-12">
+      <%= form.label :is_gift, "Is this a gift?" %>
+      <%= form.check_box :is_gift %>
+    </div>
+  </div>
+  <div class="form-row d-none" id="giver-info">
+    <div class="form-group col-md-12">
+      <%= form.label :giver_name, "Your Name" %>
+      <%= form.text_field :giver_name, class: "form-control" %>
+    </div>
+    <div class="form-group col-md-12">
+      <%= form.label :giver_message, "Gift Message (optional)" %>
+      <%= form.text_area :giver_message, class: "form-control" %>
+    </div>
+  </div>
+  <div class="form-row" id="address-info">
     <div class="form-group col-md-8">
       <%= form.label :address %>
       <%= form.text_field :address, class: "form-control", placeholder: "e.g. 123 Any St" %>
@@ -59,3 +75,21 @@
   </div>
 <% end %>
 </section>
+<script>
+  // Placing this here for now because it is short and all about presentation.
+  // As the app matures, this may move to a more civilized place in 
+  // code pulled into the bundle.
+
+  // Toggle visibility of adddres&zipcode vs. giver&message.
+  document.getElementById('order_is_gift').onchange = function (e) { 
+    var addr = document.getElementById('address-info').classList
+    var giver = document.getElementById('giver-info').classList
+    if (e.target.checked) {
+      addr.add('d-none')
+      giver.remove('d-none')
+    } else {
+      addr.remove('d-none')
+      giver.add('d-none')
+    }
+  }
+</script>
